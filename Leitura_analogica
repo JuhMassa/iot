@@ -1,0 +1,65 @@
+#incluir <Cristal Líquido.h>
+
+Cristal Líquido LCD-LCD(12,11,5,4,3,2);
+
+Inteiro x = A0;
+Inteiro e = A1;
+Inteiro btn = 7;
+Corda mover;
+Corda último movimento = "";
+
+constante Inteiro limite = 100;  
+
+vazio configurar() {
+  Serial.começar(9600);
+  Modo pin(btn,ENTRADA_PULLUP);
+
+  LCD-LCD.começar(16,2);
+  Modo pin(6,SAÍDA);
+  analogWrite(6,50);
+
+  LCD-LCD.definirCursor(0,0);
+  LCD-LCD.imprimir("Movimento:");
+}
+
+vazio laço() {
+  mover = movimento();
+  Serial.imprimir(mover);
+
+  se(mover != último movimento) {
+    LCD-LCD.definirCursor(0,1);
+    LCD-LCD.imprimir(" ");
+    LCD-LCD.definirCursor(0,1);
+    LCD-LCD.imprimir(mover);
+
+    último movimento = mover;
+  }
+
+  atraso(100);
+}
+
+Corda movimento() {
+  Inteiro xVal = leitura analógica(x);
+  Inteiro eVal = leitura analógica(e);
+
+  se(xVal < limite) {
+    retornar "Baixo";
+  }
+  se(xVal > 1023 - limite) {
+    retornar "Cima";
+  }
+  se(eVal < limite) {
+    retornar "Esquerda";
+  }
+  se(eVal > 1023 - limite) {
+    retornar "Direita";
+  }
+  se(Leitura digital(btn)== 0) {
+    retornar "Pressionado";
+  }
+  se(Leitura digital(btn)== 1) {
+    retornar "Solto";
+  }
+
+  retornar último movimento;
+}
